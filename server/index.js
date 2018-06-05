@@ -5,7 +5,7 @@ const fetch = require('isomorphic-fetch');
 const fastify = require('fastify')();
 const crypto = require('crypto');
 
-const config = require('./config.json');
+let store_base = 'https://www.jsonstore.io/';
 let url = '';
 let vapidKeys = {
   publicKey:'',
@@ -17,16 +17,22 @@ start();
 
 // generate store url and vapidKeys only once
 async function init(){
+  let config;
+  try{
+    config = require('./config.json');
+  }catch(e){
+    config = {};
+  }
   let saveObj = null;
   if(config.store_url){
     url = config.store_url;
   }else{
-    const token = await fetch(`${config.store_base}get-token`,{
+    const token = await fetch(`${store_base}get-token`,{
       method:'GET'
     }).then(resp=>resp.json());
     console.log(token);
     const tokenConfig = {
-      store_url: `${config.store_base}${token.token}`
+      store_url: `${store_base}${token.token}`
     }
     saveObj = saveObj ? Object.assign(saveObj, tokenConfig) : tokenConfig;
   }
@@ -96,7 +102,7 @@ async function start(){
     })
   });
 
-  //start server (in fact you should start a )
+  //start server (in fact you should start two diff server)
   try {
     await fastify.listen(3000);
     fastify.log.info(`server listening on ${fastify.server.address().port}`);
