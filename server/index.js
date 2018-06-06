@@ -96,7 +96,9 @@ async function start(){
         Object.keys(resp.result).forEach(key=>{
           let subscriptionObj = resp.result[key];
           subscriptionObj.expirationTime = null;
-          return webpush.sendNotification( subscriptionObj, request.body.content );
+          return webpush.sendNotification( subscriptionObj, request.body.content ).catch(err=>{
+            return fetch(`${url}/users/${key}`,{ method: 'DELETE' }).then(resp=>resp.json());
+          });
         })
       )
     })
