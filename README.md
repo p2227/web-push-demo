@@ -16,6 +16,8 @@ a demo for web push (service worker, pwa)
   npm i
   npm start
 ```
+* open `localhost:3000` subscribe
+* open `localhost:3000/admin.html` 
 
 ## tips
 * google service framework is needed if you want to run it in an Android devices;

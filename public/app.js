@@ -102,3 +102,16 @@ function base64UrlToUint8Array(base64UrlData) {
   }
   return buffer;
 }
+
+let board = document.getElementById('page-message');
+
+navigator.serviceWorker.addEventListener('message', function (event) {
+  let data = JSON.parse(event.data);
+  if (data.type === 'update') {
+    fetch('/push-log',{
+      method:'GET'
+    })
+    .then(resp=>resp.json())
+    .then(json=>board.innerHTML = JSON.stringify(json,null,2));
+  }
+});

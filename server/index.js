@@ -92,17 +92,35 @@ async function start(){
     })
     .then(resp=>resp.json())
     .then(resp=>{
+      if(!resp.result){
+        return 'no user';
+      }
       return Promise.all(
         Object.keys(resp.result).forEach(key=>{
           let subscriptionObj = resp.result[key];
           subscriptionObj.expirationTime = null;
-          return webpush.sendNotification( subscriptionObj, request.body.content ).catch(err=>{
-            return fetch(`${url}/users/${key}`,{ method: 'DELETE' }).then(resp=>resp.json());
-          });
+          return webpush.sendNotification( subscriptionObj, JSON.stringify(request.body)).then(sendResult=>{
+            fetch(`${url}/push/p${crypto.randomBytes(5).toString('hex')}`,{
+              method:'POST',
+              headers:{
+                'Content-type': 'application/json'
+              },
+              body:JSON.stringify({
+                userid:key,
+                content:request.body,
+                time:+new Date
+              })
+            })
+            return sendResult;
+          })
         })
       )
     })
   });
+
+  fastify.get('/push-log', async (request, reply)=>{
+    return fetch(`${url}/push`, { method: 'GET' }).then(resp=>resp.json())
+  })
 
   //start server (in fact you should start two diff server)
   try {

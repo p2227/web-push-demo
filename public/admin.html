@@ -13,19 +13,32 @@
 </head>
 <body>
   <div>
-    <textarea id="content" class="content" placeholder="please enter the push content"></textarea>
-    <button id="push">Push</button>
+    <form id="push-form" onsubmit="javascript:submitPush(event);return false;">
+      <label><input type="radio" value="update" name="type" checked onchange="updateForm(event)"/>update resource</label>
+      <label><input type="radio" value="show" name="type" onchange="updateForm(event)"/>show description</label>
+      <br/>
+      <textarea name="content" id="content" class="content" placeholder="please enter the push content" onchange="updateForm(event)"></textarea>
+      <button>Push</button>
+    </form>
   </div>
   <script>
-    content.value = +new Date;
-    push.onclick = function(){
+    let formData = {
+      type:'update',
+      content:+new Date
+    }
+    content.value = formData.content;
+    function submitPush(e){
       fetch('/push',{
         method:'POST',
         headers:{
           'Content-type': 'application/json'
         },
-        body:JSON.stringify({content:content.value})
+        body:JSON.stringify(formData)
       })
+    }
+    function updateForm(e){
+      let { name, value } = e.target;
+      formData[name] = value;
     }
   </script>
 </body>
