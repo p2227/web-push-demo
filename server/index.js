@@ -34,6 +34,7 @@ async function init(){
     const tokenConfig = {
       store_url: `${store_base}${token.token}`
     }
+    url = tokenConfig.store_url;
     saveObj = saveObj ? Object.assign(saveObj, tokenConfig) : tokenConfig;
   }
 
@@ -79,8 +80,7 @@ async function start(){
       },
       body:JSON.stringify(request.body.subscription)
     }).then(function(resp){
-      reply
-      .code(resp.status);
+      reply.code(resp.status);
       return resp.statusText;
     });
   });
@@ -110,8 +110,9 @@ async function start(){
                 content:request.body,
                 time:+new Date
               })
-            })
-            return sendResult;
+            });
+            reply.code(sendResult.statusCode)
+            return sendResult.body;
           })
         })
       )

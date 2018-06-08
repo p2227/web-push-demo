@@ -17,7 +17,9 @@ a demo for web push (service worker, pwa)
   npm start
 ```
 * open `localhost:3000` subscribe
-* open `localhost:3000/admin.html` 
+* close chrome tab and reopen `localhost:3000`, let the service worker take control of the page
+* open `localhost:3000/admin.html` , send a `update resource` push
+* when the client `localhost:3000` get the push, it will get `/push-log` resource and update it automatically
 
 ## tips
 * google service framework is needed if you want to run it in an Android devices;
